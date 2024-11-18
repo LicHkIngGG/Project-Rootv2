@@ -1,0 +1,17 @@
+/* src/dashboard/components/atoms/Button.css */
+
+.button {
+  background-color: #f5a770;
+  border-radius: 20px;
+  padding: 15px 30px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #e58950;
+}

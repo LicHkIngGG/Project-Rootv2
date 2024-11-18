@@ -1,0 +1,18 @@
+/* src/dashboard/components/atoms/EstadoEtiqueta.css */
+
+.estado-etiqueta {
+  padding: 10px 20px;
+  border-radius: 15px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.en-linea {
+  background-color: #f5a770;
+}
+
+.fuera-de-linea {
+  background-color: #e0e0e0;
+  color: #757575;
+}

@@ -1,0 +1,27 @@
+/* Estilo para el botón apagado */
+.boton-apagado {
+  background-color: red;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Estilo para el botón encendido */
+.boton-encendido {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Estilo general para el panel */
+.panel-estado-puerta {
+  text-align: center;
+  margin: 20px;
+}

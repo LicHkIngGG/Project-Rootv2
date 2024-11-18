@@ -1,0 +1,62 @@
+.calendar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.calendar-content {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.attendance-details {
+  margin-top: 20px;
+  overflow-x: auto; /* Scroll horizontal para tablas */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+@media (max-width: 768px) {
+  .calendar-content {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+
+  table {
+    font-size: 12px;
+  }
+}
+

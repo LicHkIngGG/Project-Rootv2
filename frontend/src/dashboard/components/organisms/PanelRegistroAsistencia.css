@@ -1,0 +1,65 @@
+.attendance-table {
+  background-color: #2c2c2c;
+  border-radius: 10px;
+  padding: 20px;
+  color: #e0e0e0;
+  width: 90%;
+  max-width: 900px; /* Ampliar un poco más para acomodar las columnas */
+  margin: 40px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.attendance-table h2 {
+  margin: 0 0 20px; /* Mayor espacio inferior */
+  font-size: 1.8em; /* Texto más grande */
+  color: #ffffff;
+  text-align: center; /* Centrado del título */
+}
+
+.attendance-table table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* Asegurar que las columnas tengan un ancho fijo */
+}
+
+.attendance-table th, .attendance-table td {
+  padding: 16px; /* Más espacio entre los campos */
+  text-align: center;
+  word-wrap: break-word; /* Permitir saltos de línea si el texto es muy largo */
+}
+
+.attendance-table th {
+  background-color: #444;
+  color: #ffffff;
+  font-weight: bold; /* Resaltar los encabezados */
+  border-bottom: 2px solid #555;
+}
+
+.attendance-table tr:nth-child(even) {
+  background-color: #333;
+}
+
+.attendance-table tr:hover {
+  background-color: #444;
+}
+
+.attendance-table td {
+  color: #e0e0e0;
+  border-top: 1px solid #555;
+  font-size: 1em;
+  line-height: 1.6; /* Mayor espacio entre líneas */
+}
+
+.attendance-table th, .attendance-table td {
+  border-bottom: 1px solid #555;
+}
+
+.attendance-table th:first-child, 
+.attendance-table td:first-child {
+  border-left: none; /* Sin borde en la primera columna */
+}
+
+.attendance-table th:last-child, 
+.attendance-table td:last-child {
+  border-right: none; /* Sin borde en la última columna */
+}

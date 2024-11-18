@@ -1,0 +1,30 @@
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  padding: 10px;
+  display: block;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.sidebar a.selected {
+  background-color: #007bff; /* Fondo azul */
+  color: #ffd700; /* Texto amarillo */
+  font-weight: bold;
+  border: 2px solid #0056b3; /* Borde azul oscuro */
+}

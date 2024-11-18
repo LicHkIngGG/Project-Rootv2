@@ -1,0 +1,31 @@
+.reportes-dashboard {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  .filtro-container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .filtro-container label {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .filtro-container select {
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  .grafica {
+    text-align: center;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  

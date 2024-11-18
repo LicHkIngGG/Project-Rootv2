@@ -1,0 +1,26 @@
+/* DashboardLayout.css */
+.dashboard-layout {
+  display: flex; /* Flexbox para alinear Sidebar y contenido */
+  height: 100vh; /* Altura completa de la ventana */
+  width: 100%; /* Ancho completo */
+  overflow: hidden; /* Evita desbordamientos no deseados */
+}
+
+.sidebar {
+  width: 220px; /* Ancho fijo del Sidebar */
+  height: 100%; /* Altura completa */
+  background-color: #f4f4f4; /* Fondo claro */
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+  flex-shrink: 0; /* Evita que el Sidebar cambie de tamaño */
+}
+
+.content {
+  flex: 1; /* Ocupa el resto del espacio disponible */
+  padding: 20px;
+  overflow-y: auto; /* Permite scroll vertical si el contenido es largo */
+  background-color: #f9f9f9; /* Fondo claro para distinguir el contenido */
+  display: flex; /* Flexbox interno para organizar los hijos del contenido */
+  flex-direction: column; /* Organiza los hijos en columna */
+  align-items: center; /* Centra horizontalmente los hijos */
+}
