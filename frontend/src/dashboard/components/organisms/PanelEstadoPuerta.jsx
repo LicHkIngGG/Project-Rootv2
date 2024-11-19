@@ -14,7 +14,7 @@ const PanelEstadoPuerta = () => {
       setEstadoChapa('ABIERTO');
 
       // Llamada al backend
-      const response = await fetch('http://127.0.0.1:5000/api/activar_chapa', {
+      const response = await fetch('http://192.168.40.106:5000/api/activar_chapa', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 import '../login/Login.css';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onLogin(username, password); // Llama a la función de autenticación
+    const success = await login(username, password);
+    console.log('Resultado del login:', success);
+    if (success) {
+      navigate('/administracion');
+    }
   };
 
   return (
@@ -16,10 +24,10 @@ const Login = ({ onLogin }) => {
         <h1 className="title">Escuela Militar de Ingeniería</h1>
         <h2 className="subtitle">Sistema de control de asistencia laboratorio</h2>
         <p className="description">
-          ¡Bienvenido! Por favor introduce tus datos de administrador
+          ¡Bienvenido! Por favor introduce tus datos
         </p>
         <form className="login-form" onSubmit={handleSubmit}>
-          <label className="label" htmlFor="email">Email section</label>
+          <label className="label" htmlFor="email">Correo electrónico</label>
           <input
             id="email"
             type="text"

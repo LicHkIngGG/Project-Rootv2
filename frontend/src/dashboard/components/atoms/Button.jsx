@@ -3,9 +3,9 @@ import './Button.css';
 
 const Button = ({ onClick, label, className, ...props }) => (
   <button
-    className={`button ${className}`} // Permite agregar clases adicionales
+    className={`button ${className}`} 
     onClick={onClick}
-    {...props} // Para pasar otras props como `disabled`, `type`, etc.
+    {...props} 
   >
     {label}
   </button>

@@ -4,28 +4,28 @@
   padding: 20px;
   color: #e0e0e0;
   width: 90%;
-  max-width: 900px; /* Ampliar un poco más para acomodar las columnas */
+  max-width: 900px; 
   margin: 40px auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .attendance-table h2 {
-  margin: 0 0 20px; /* Mayor espacio inferior */
-  font-size: 1.8em; /* Texto más grande */
+  margin: 0 0 20px; 
+  font-size: 1.8em; 
   color: #ffffff;
-  text-align: center; /* Centrado del título */
+  text-align: center; 
 }
 
 .attendance-table table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* Asegurar que las columnas tengan un ancho fijo */
+  table-layout: fixed; 
 }
 
 .attendance-table th, .attendance-table td {
-  padding: 16px; /* Más espacio entre los campos */
+  padding: 16px; 
   text-align: center;
-  word-wrap: break-word; /* Permitir saltos de línea si el texto es muy largo */
+  word-wrap: break-word; 
 }
 
 .attendance-table th {
@@ -47,7 +47,7 @@
   color: #e0e0e0;
   border-top: 1px solid #555;
   font-size: 1em;
-  line-height: 1.6; /* Mayor espacio entre líneas */
+  line-height: 1.6;
 }
 
 .attendance-table th, .attendance-table td {
@@ -56,10 +56,10 @@
 
 .attendance-table th:first-child, 
 .attendance-table td:first-child {
-  border-left: none; /* Sin borde en la primera columna */
+  border-left: none; 
 }
 
 .attendance-table th:last-child, 
 .attendance-table td:last-child {
-  border-right: none; /* Sin borde en la última columna */
+  border-right: none; 
 }

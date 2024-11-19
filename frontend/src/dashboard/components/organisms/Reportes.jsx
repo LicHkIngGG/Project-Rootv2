@@ -18,39 +18,34 @@ const Reportes = () => {
     await fetchAsistenciaData(nuevoFiltro);
   };
 
-  // Simulación de conexión a la base de datos para asistencia
+  // Función para obtener datos de asistencia desde el backend
   const fetchAsistenciaData = async (filtro) => {
-    // Aquí deberás realizar la conexión a tu backend
-    let fakeData;
-    if (filtro === 'dia') {
-      fakeData = [
-        { name: 'Asiste', value: 5 },
-        { name: 'No asiste', value: 3 },
-      ];
-    } else if (filtro === 'semana') {
-      fakeData = [
-        { name: 'Asiste', value: 25 },
-        { name: 'No asiste', value: 15 },
-      ];
-    } else {
-      fakeData = [
-        { name: 'Asiste', value: 100 },
-        { name: 'No asiste', value: 60 },
-      ];
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/reportes/asistencia?filtro=${filtro}`);
+      const data = await response.json();
+      if (data.status === 'success') {
+        setAsistenciaData(data.data);
+      } else {
+        console.error('Error al obtener datos de asistencia:', data.message);
+      }
+    } catch (error) {
+      console.error('Error al conectar con el servidor:', error);
     }
-    setAsistenciaData(fakeData);
   };
 
-  // Simulación de conexión a la base de datos para apertura
+  // Función para obtener datos de apertura desde el backend
   const fetchAperturaData = async () => {
-    // Aquí deberás realizar la conexión a tu backend
-    const fakeData = [
-      { name: 'Semana 1', Aperturas: 5 },
-      { name: 'Semana 2', Aperturas: 8 },
-      { name: 'Semana 3', Aperturas: 4 },
-      { name: 'Semana 4', Aperturas: 7 },
-    ];
-    setAperturaData(fakeData);
+    try {
+      const response = await fetch('http://192.168.40.102:5000/api/reportes/apertura');
+      const data = await response.json();
+      if (data.status === 'success') {
+        setAperturaData(data.data);
+      } else {
+        console.error('Error al obtener datos de apertura:', data.message);
+      }
+    } catch (error) {
+      console.error('Error al conectar con el servidor:', error);
+    }
   };
 
   // Cargar datos al montar el componente
@@ -63,8 +58,6 @@ const Reportes = () => {
     <div className="dashboard-reportes">
       <div className="grafica-container">
         <h2>Estadísticas de Asistencia</h2>
-
-        {/* Filtro de intervalo de tiempo */}
         <div className="filtro-container">
           <label htmlFor="filtro-asistencia">Seleccionar intervalo:</label>
           <select
@@ -77,8 +70,6 @@ const Reportes = () => {
             <option value="mes">Mes</option>
           </select>
         </div>
-
-        {/* Gráfica de torta para asistencia */}
         <PieChart width={400} height={400}>
           <Pie
             data={asistenciaData}
@@ -100,8 +91,6 @@ const Reportes = () => {
 
       <div className="grafica-container">
         <h2>Aperturas por Semana</h2>
-
-        {/* Gráfica de barras para apertura */}
         <BarChart
           width={500}
           height={300}

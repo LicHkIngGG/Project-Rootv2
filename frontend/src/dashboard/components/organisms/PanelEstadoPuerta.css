@@ -9,7 +9,7 @@
   cursor: pointer;
 }
 
-/* Estilo para el botón encendido */
+
 .boton-encendido {
   background-color: green;
   color: white;
@@ -20,7 +20,7 @@
   cursor: pointer;
 }
 
-/* Estilo general para el panel */
+
 .panel-estado-puerta {
   text-align: center;
   margin: 20px;

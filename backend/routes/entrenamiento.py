@@ -1,7 +1,8 @@
+#router/entrenamiento
 from flask import Blueprint, jsonify
 import subprocess
 
-# Define el blueprint como entrenamiento_bp
+
 entrenamiento_bp = Blueprint('entrenamiento_bp', __name__)
 
 @entrenamiento_bp.route('/api/train', methods=['POST'])

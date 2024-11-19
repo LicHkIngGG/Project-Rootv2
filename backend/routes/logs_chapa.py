@@ -1,3 +1,4 @@
+#routes/logs_chapa
 from flask import Blueprint, request, jsonify
 from extensions import mysql
 import socket
@@ -6,7 +7,7 @@ import time
 logs_chapa_bp = Blueprint('logs_chapa', __name__)
 
 # Dirección IP y puerto del Arduino
-ARDUINO_IP = "192.168.1.110"
+ARDUINO_IP = "192.168.40.106"
 ARDUINO_PORT = 80
 
 # Función para manejar la conexión con el Arduino

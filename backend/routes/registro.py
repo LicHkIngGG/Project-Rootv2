@@ -5,7 +5,7 @@ import numpy as np
 import base64
 from datetime import datetime
 
-# Crear Blueprint para el registro
+
 registro_bp = Blueprint('registro_bp', __name__)
 
 # Ruta donde se almacenarán las imágenes de los usuarios
