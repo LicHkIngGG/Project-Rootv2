@@ -1,103 +1,72 @@
-from flask import Blueprint, request, jsonify
-import cv2
 import os
-import numpy as np
 import base64
-from datetime import datetime
+from flask import Blueprint, request, jsonify
+from extensions import mysql
 
+registro_bp = Blueprint("registro_bp", __name__)
 
-registro_bp = Blueprint('registro_bp', __name__)
+# Ruta para almacenar imágenes capturadas y datos de usuario
+DATA_PATH = "C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Data"
 
-# Ruta donde se almacenarán las imágenes de los usuarios
-DATA_PATH = 'C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Data'
-
-@registro_bp.route('/api/registro/register', methods=['POST'])
-def register_user():
-    """
-    Endpoint para registrar un usuario y capturar imágenes faciales
-    de diferentes ángulos (frontal, perfil izquierdo, perfil derecho).
-    """
+@registro_bp.route("/register", methods=["POST"])
+def registrar_usuario():
     data = request.get_json()
 
-    # Validar datos recibidos
     try:
-        name = data['name']
-        code = data['code']
-        email = data['email']
-        semester = data['semester']
-        career = data['career']
-        image = data['image']
-    except KeyError as e:
-        return jsonify({'message': 'Faltan datos en la solicitud.', 'error': str(e)}), 400
+        # Validar los datos recibidos
+        nombre = data.get("nombre")
+        codigo = data.get("codigo")
+        email = data.get("email")
+        semestre = data.get("semestre")
+        carrera = data.get("carrera")
+        imagenes = data.get("imagenes", [])  # Lista de imágenes en formato base64
 
-    # Crear carpeta para el usuario si no existe
-    person_path = os.path.join(DATA_PATH, name)
-    if not os.path.exists(person_path):
-        os.makedirs(person_path)
+        if not all([nombre, codigo, email, semestre, carrera, imagenes]):
+            return jsonify({"message": "Faltan datos obligatorios"}), 400
 
-    # Decodificar la imagen base64
-    try:
-        image_data = base64.b64decode(image.split(",")[1])
-        nparr = np.frombuffer(image_data, np.uint8)
-        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if len(imagenes) < 10:
+            return jsonify({"message": "Se requieren al menos 10 imágenes"}), 400
+
+        # Verificar si el código ya existe en la base de datos
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT id FROM usuarios WHERE codigo = %s", (codigo,))
+        if cursor.fetchone():
+            return jsonify({"message": "El código ya está registrado"}), 400
+
+        # Insertar datos personales en la base de datos
+        query = """
+            INSERT INTO usuarios (nombre, codigo, email, semestre, carrera)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (nombre, codigo, email, semestre, carrera))
+        mysql.connection.commit()
+        usuario_id = cursor.lastrowid
+
+        # Crear carpeta para almacenar imágenes
+        usuario_path = os.path.join(DATA_PATH, codigo)
+        os.makedirs(usuario_path, exist_ok=True)
+
+        # Decodificar y guardar cada imagen
+        for idx, img_base64 in enumerate(imagenes):
+            if not img_base64:
+                print(f"Imagen {idx} está vacía. Saltando...")
+                continue
+            try:
+                # Decodificar la imagen base64
+                image_data = base64.b64decode(img_base64.split(",")[1])
+                file_path = os.path.join(usuario_path, f"rostro_{idx + 1}.jpg")
+                with open(file_path, "wb") as f:
+                    f.write(image_data)
+
+                # Registrar imagen en la base de datos
+                img_query = "INSERT INTO imagenes (usuario_id, ruta_imagen) VALUES (%s, %s)"
+                cursor.execute(img_query, (usuario_id, file_path))
+            except Exception as img_error:
+                print(f"Error al guardar la imagen {idx + 1}: {img_error}")
+                return jsonify({"message": "Error al procesar las imágenes"}), 500
+
+        mysql.connection.commit()
+        return jsonify({"message": "Usuario y imágenes registrados correctamente"}), 201
     except Exception as e:
-        return jsonify({'message': 'Error al decodificar la imagen.', 'error': str(e)}), 400
-
-    # Inicializar clasificadores para detección de rostros
-    face_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    profile_classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_classifier.detectMultiScale(gray, 1.3, 5)
-    profile_left = profile_classifier.detectMultiScale(gray, 1.3, 5)
-    profile_right = profile_classifier.detectMultiScale(cv2.flip(gray, 1), 1.3, 5)
-
-    count = 0
-
-    # Capturar rostros frontales
-    for (x, y, w, h) in faces:
-        rostro = frame[y:y + h, x:x + w]
-        rostro = resize_image(rostro)
-        save_image(person_path, rostro, f'frontal_{count}')
-        count += 1
-
-    # Capturar perfiles izquierdos
-    for (x, y, w, h) in profile_left:
-        rostro = frame[y:y + h, x:x + w]
-        rostro = resize_image(rostro)
-        save_image(person_path, rostro, f'profile_left_{count}')
-        count += 1
-
-    # Capturar perfiles derechos (ajustar coordenadas por espejo)
-    for (x, y, w, h) in profile_right:
-        x = frame.shape[1] - x - w  # Ajustar coordenadas del rostro reflejado
-        rostro = frame[y:y + h, x:x + w]
-        rostro = resize_image(rostro)
-        save_image(person_path, rostro, f'profile_right_{count}')
-        count += 1
-
-    if count > 0:
-        return jsonify({'message': f'Registro exitoso. {count} imágenes capturadas y guardadas.'})
-    else:
-        return jsonify({'message': 'No se detectaron rostros.', 'error': 'No faces detected'}), 400
-
-
-def resize_image(image, size=(150, 150)):
-    """
-    Redimensionar la imagen al tamaño especificado.
-    :param image: Imagen original.
-    :param size: Tamaño de salida en (ancho, alto).
-    :return: Imagen redimensionada.
-    """
-    return cv2.resize(image, size, interpolation=cv2.INTER_CUBIC)
-
-
-def save_image(path, image, filename):
-    """
-    Guardar la imagen en una ruta específica.
-    :param path: Ruta donde se guardará la imagen.
-    :param image: Imagen a guardar.
-    :param filename: Nombre del archivo sin extensión.
-    """
-    file_path = os.path.join(path, f'{filename}.jpg')
-    cv2.imwrite(file_path, image)
+        print(f"Error general: {e}")
+        return jsonify({"message": "Error al registrar usuario", "error": str(e)}), 500

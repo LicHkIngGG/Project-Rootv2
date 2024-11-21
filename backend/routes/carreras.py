@@ -4,20 +4,21 @@ from extensions import mysql
 # Crear el blueprint para carreras
 carreras_bp = Blueprint('carreras', __name__)
 
-@carreras_bp.route('/api/carreras', methods=['GET'])
+@carreras_bp.route('/', methods=['GET'])
 def obtener_carreras():
     try:
-        query = "SELECT nombre FROM carreras"
+        query = "SELECT id, nombre FROM carreras"
         cursor = mysql.connection.cursor()
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()
 
-        carreras = [row[0] for row in result]
+        carreras = [{"id": row[0], "nombre": row[1]} for row in result]
         return jsonify({"status": "success", "data": carreras}), 200
     except Exception as e:
         print(f"Error al obtener carreras: {e}")
         return jsonify({"status": "error", "message": "Error al obtener carreras"}), 500
+
 
 @carreras_bp.route('/api/carreras', methods=['POST'])
 def añadir_carrera():

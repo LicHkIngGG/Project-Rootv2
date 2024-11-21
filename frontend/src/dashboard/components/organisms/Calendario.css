@@ -1,78 +1,115 @@
-/* Contenedor principal */
-.calendar-container {
-  display: flex;
-  flex-direction: column; /* Organiza elementos verticalmente */
-  align-items: center; /* Centra horizontalmente */
-  gap: 20px; /* Espaciado entre elementos */
-  padding: 20px;
-  width: 100%;
+/* Botón Añadir Carrera */
+.add-carrera-button {
+  margin: 10px 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* Título principal */
-.page-title {
-  font-size: 36px;
-  font-weight: bold;
-  color: #333;
+.add-carrera-button:hover {
+  background-color: #45a049;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+.modal-content h2 {
   margin-bottom: 20px;
 }
 
-/* Sección del calendario */
-.calendar-section {
+.modal-content input {
   width: 100%;
-  max-width: 800px; /* Límite de ancho */
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.modal-buttons {
   display: flex;
-  flex-direction: column; /* Elementos apilados */
-  gap: 20px; /* Espaciado interno */
+  justify-content: space-between;
+  gap: 10px;
 }
 
-/* Estilos para el calendario */
-.react-calendar {
-  width: 100%;
-  max-width: 700px; /* Límite del ancho */
-  margin: 0 auto;
+.modal-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.react-calendar__tile {
-  text-align: center;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #000; /* Números en negro */
+.modal-buttons button:first-child {
+  background-color: #4caf50;
+  color: white;
 }
 
-.react-calendar__tile--active {
-  background: #007bff;
-  color: #fff; /* Números blancos en el día seleccionado */
+.modal-buttons button:last-child {
+  background-color: #f44336;
+  color: white;
+}
+
+.modal-buttons button:hover {
+  opacity: 0.9;
+}
+/* Ajustar el diseño del dropdown */
+select {
+  width: 100%; /* Asegura que ocupe todo el espacio disponible */
+  padding: 8px; /* Espaciado interno */
+  font-size: 14px; /* Tamaño de texto */
+  border: 1px solid #ccc; /* Borde visible */
+  border-radius: 4px; /* Bordes redondeados */
+  background-color: #fff; /* Fondo blanco */
+  appearance: none; /* Elimina los estilos predeterminados */
+}
+
+/* Opciones del dropdown */
+select option {
+  font-size: 14px; /* Tamaño consistente */
+  color: #333; /* Texto legible */
+}
+
+/* Para asegurar que el dropdown sea visible */
+.select-container {
+  position: relative; /* Asegura que el dropdown se posicione correctamente */
+  z-index: 10; /* Asegura que el dropdown esté por encima de otros elementos */
+}
+
+/* Solución para posibles problemas de altura */
+select:focus {
+  outline: none; /* Elimina el contorno al seleccionar */
+  border-color: #4caf50; /* Resalta el borde al enfocar */
+}
+select {
+  padding: 8px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-/* Tabla de asistencia */
-.attendance-table {
-  width: 100%;
-  max-width: 800px; /* Límite del ancho */
-  margin: 0 auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
-  .calendar-section {
-    max-width: 100%;
-    padding: 15px;
-  }
-
-  .react-calendar {
-    max-width: 100%;
-  }
-
-  .attendance-table {
-    max-width: 100%;
-  }
 }
