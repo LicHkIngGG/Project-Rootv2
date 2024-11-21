@@ -21,7 +21,7 @@ app.config.from_pyfile('config.py')
 # Inicializar MySQL
 mysql.init_app(app)
 
-# Registrar Blueprints
+# Registrar Blueprintss
 app.register_blueprint(logs_chapa_bp)
 app.register_blueprint(asistencia_bp)
 app.register_blueprint(registro_bp, url_prefix='/api/registro')  
