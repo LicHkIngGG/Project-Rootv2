@@ -143,18 +143,20 @@ function RegistroN() {
         </label>
         <div className="video-section">
           <video ref={videoRef} autoPlay></video>
-          {!isCameraActive ? (
-            <button type="button" onClick={startCamera}>
-              Iniciar Cámara
+          <div className="button-group">
+            {isCameraActive ? (
+              <button type="button" onClick={stopCamera}>
+                Detener Cámara
+              </button>
+            ) : (
+              <button type="button" onClick={startCamera}>
+                Iniciar Cámara
+              </button>
+            )}
+            <button type="button" onClick={captureImage}>
+              Escanear Rostro
             </button>
-          ) : (
-            <button type="button" onClick={stopCamera}>
-              Detener Cámara
-            </button>
-          )}
-          <button type="button" onClick={captureImage}>
-            Escanear Rostro
-          </button>
+          </div>
         </div>
         <p>Imágenes capturadas: {capturedImageCount}/400</p>
         <button type="submit">Crear</button>

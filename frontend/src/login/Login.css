@@ -1,112 +1,182 @@
-/* Estructura general */
+/* Contenedor principal */
 .login-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100vh;
-    padding: 0 40px;
-    background-color: #f9f9f9;
-    font-family: 'Arial', sans-serif;
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  height: 100vh; /* Ocupa toda la pantalla */
+  background-color: #f9f9f9; /* Fondo claro */
+  font-family: 'Arial', sans-serif;
+  box-sizing: border-box;
+  overflow-y: auto; /* Permite scroll en pantallas pequeñas */
+}
+
+/* Fondo interactivo */
+.background-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0eafc, #cfdef3);
+  z-index: -1; /* Asegura que esté detrás del contenido */
+}
+
+/* Contenedor interno */
+.login-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap; /* Apila los elementos en pantallas pequeñas */
+  max-width: 1200px;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Caja izquierda (Formulario) */
+.login-box {
+  flex: 1;
+  max-width: 450px; /* Ancho máximo del formulario */
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 10px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #4a90e2;
+  margin-bottom: 15px;
+}
+
+.description {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+  display: block;
+  text-align: left;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.checkbox {
+  margin-right: 8px;
+}
+
+.forgot-password {
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #357abd;
+}
+
+/* Caja derecha (Logo) */
+.login-logo {
+  flex: 1;
+  max-width: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.logo-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .login-content {
+    flex-direction: column; /* Apila el formulario y el logo */
   }
-  
-  /* Caja izquierda (Formulario) */
-  .login-box {
-    max-width: 45%;
-    padding: 40px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .title {
-    font-size: 26px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 20px;
-  }
-  
-  .subtitle {
-    font-size: 20px;
-    font-weight: bold;
-    color: #4a90e2;
-    margin-bottom: 15px;
-  }
-  
-  .description {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 30px;
-  }
-  
-  .label {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 8px;
-  }
-  
-  .input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  
-  .input:focus {
-    border-color: #4a90e2;
-    outline: none;
-  }
-  
-  .login-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .checkbox {
-    margin-right: 8px;
-  }
-  
-  .forgot-password {
-    font-size: 14px;
-    color: #4a90e2;
-    text-decoration: none;
-  }
-  
-  .forgot-password:hover {
-    text-decoration: underline;
-  }
-  
-  .login-button {
-    width: 100%;
-    padding: 15px;
-    background-color: #4a90e2;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .login-button:hover {
-    background-color: #357ABD;
-  }
-  
-  /* Caja derecha (Logo) */
+
+  .login-box,
   .login-logo {
-    max-width: 40%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 100%; /* Asegura que ocupen todo el ancho disponible */
   }
-  
+}
+
+@media (max-width: 480px) {
+  .login-box {
+    padding: 20px;
+  }
+
   .logo-image {
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
+    max-width: 80%; /* Reduce el tamaño del logo */
   }
-  
+
+  .title {
+    font-size: 20px; /* Reduce el tamaño de texto */
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+
+  .input {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .login-button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

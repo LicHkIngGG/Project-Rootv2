@@ -1,31 +1,129 @@
-.reportes-dashboard {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  
+.reportes-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  margin: auto;
+}
+
+.reportes-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.reporte-section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.filtro-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+
+.filtro-item {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 200px; /* Asegura que cada filtro tenga un ancho mínimo y se acomoden en columnas */
+}
+
+.filtro-item label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.filtro-item select {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.resultados-container {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resultados-container h3 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.resultados-container ul {
+  padding-left: 20px;
+}
+
+.resultados-container p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Adaptación para pantallas más pequeñas */
+@media (max-width: 768px) {
   .filtro-container {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 10px;
   }
-  
-  .filtro-container label {
-    font-size: 16px;
-    font-weight: bold;
+
+  .filtro-item {
+    flex: 1 1 auto;
+    width: 100%; /* Cada filtro ocupará todo el ancho */
   }
-  
-  .filtro-container select {
-    padding: 5px;
+
+  .reportes-title {
+    font-size: 20px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .resultados-container h3 {
     font-size: 14px;
   }
-  
-  .grafica {
-    text-align: center;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 480px) {
+  .reportes-container {
+    padding: 10px;
   }
-  
+
+  .filtro-item select {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .resultados-container {
+    padding: 10px;
+  }
+
+  .reportes-title {
+    font-size: 18px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .resultados-container h3 {
+    font-size: 12px;
+  }
+}

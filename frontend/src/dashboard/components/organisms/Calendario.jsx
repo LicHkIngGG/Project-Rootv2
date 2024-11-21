@@ -1,115 +1,110 @@
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import Filters from "../atoms/Filters";
+import AddEntry from "../atoms/AddEntry";
+import AttendanceTable from "../atoms/AttendanceTable";
 import "./Calendario.css";
 
 const Calendario = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [estudiantes, setEstudiantes] = useState([]);
-  const [newEntry, setNewEntry] = useState({
-    nombre: "",
-    saga: "",
-    paralelo: "",
-    estado: "",
-    carrera: "",
-  });
+  const [filters, setFilters] = useState({ paralelo: "", carrera_id: "" });
+  const [carreras, setCarreras] = useState([]);
 
-  // Fetch asistencia para una fecha específica
-  const fetchAsistencia = async (fecha) => {
-    try {
-      const response = await fetch(`/api/asistencia?fecha=${fecha}`);
-      const data = await response.json();
-      if (data.status === "success") {
-        setEstudiantes(data.data);
-      } else {
-        console.error(data.message);
+  // Obtener carreras al cargar la página
+  useEffect(() => {
+    const fetchCarreras = async () => {
+      try {
+        const response = await fetch("/api/carreras");
+        const data = await response.json();
+        if (data.status === "success") setCarreras(data.data);
+        else console.error(data.message);
+      } catch (error) {
+        console.error("Error al obtener carreras:", error);
       }
+    };
+    fetchCarreras();
+  }, []);
+
+  // Obtener asistencia
+  const fetchAsistencia = async (fecha, paralelo = "", carrera_id = "") => {
+    try {
+      const query = new URLSearchParams({ fecha, paralelo, carrera_id }).toString();
+      const response = await fetch(`/api/asistencia?${query}`);
+      const data = await response.json();
+      if (data.status === "success") setEstudiantes(data.data);
+      else console.error(data.message);
     } catch (error) {
       console.error("Error al obtener asistencia:", error);
     }
   };
 
-  // Manejar clic en un día
+  // Manejar clic en una fecha
   const handleDateClick = (date) => {
     const formattedDate = date.toISOString().split("T")[0];
     setSelectedDate(formattedDate);
-    fetchAsistencia(formattedDate);
+    fetchAsistencia(formattedDate, filters.paralelo, filters.carrera_id);
   };
 
-  // Añadir nuevo registro
-  const handleSaveRecord = async () => {
-    try {
-      const newFecha = selectedDate || new Date().toISOString().split("T")[0];
-      const nuevoRegistro = { ...newEntry, fecha: newFecha };
-
-      const response = await fetch("/api/asistencia", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(nuevoRegistro),
-      });
-
-      const data = await response.json();
-      if (data.status === "success") {
-        fetchAsistencia(newFecha); // Actualiza los registros después de añadir
-      } else {
-        console.error(data.message);
-      }
-    } catch (error) {
-      console.error("Error al guardar asistencia:", error);
-    }
+  // Manejar cambios en filtros
+  const handleFilterChange = (value, type) => {
+    const newFilters = { ...filters, [type]: value };
+    setFilters(newFilters);
+    if (selectedDate) fetchAsistencia(selectedDate, newFilters.paralelo, newFilters.carrera_id);
   };
 
   return (
-    <div className="calendar-wrapper">
-      <h2>Calendario de Asistencia</h2>
-      <div className="calendar-content">
+    <div className="calendar-container">
+      {/* Texto principal */}
+      <h1 className="page-title">Contenido principal</h1>
+      
+      {/* Contenedor del calendario */}
+      <div className="calendar-section">
+        <h2>Calendario de Asistencia</h2>
         <Calendar onClickDay={handleDateClick} />
+        
+        {/* Filtros */}
+        <Filters
+          paralelos={[
+            "1er semestre",
+            "2do semestre",
+            "3er semestre",
+            "4to semestre",
+            "5to semestre",
+            "6to semestre",
+            "7mo semestre",
+            "8vo semestre",
+            "9no semestre",
+            "10mo semestre",
+          ]}
+          carreras={carreras}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+        />
+        
+        {/* Agregar nuevo registro */}
+        <AddEntry
+          selectedDate={selectedDate}
+          carreras={carreras}
+          paralelos={[
+            "1er semestre",
+            "2do semestre",
+            "3er semestre",
+            "4to semestre",
+            "5to semestre",
+            "6to semestre",
+            "7mo semestre",
+            "8vo semestre",
+            "9no semestre",
+            "10mo semestre",
+          ]}
+          fetchAsistencia={fetchAsistencia}
+        />
       </div>
 
-      {selectedDate && (
-        <div>
-          <h3>Asistencia para {selectedDate}</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Saga</th>
-                <th>Paralelo</th>
-                <th>Fecha</th>
-              </tr>
-            </thead>
-            <tbody>
-              {estudiantes.map((estudiante) => (
-                <tr key={estudiante.id}>
-                  <td>{estudiante.id}</td>
-                  <td>{estudiante.nombre}</td>
-                  <td>{estudiante.saga}</td>
-                  <td>{estudiante.paralelo}</td>
-                  <td>{estudiante.fecha}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <div>
-        <h3>Añadir Registro</h3>
-        <input
-          placeholder="Nombre"
-          value={newEntry.nombre}
-          onChange={(e) => setNewEntry({ ...newEntry, nombre: e.target.value })}
-        />
-        <input
-          placeholder="Saga"
-          value={newEntry.saga}
-          onChange={(e) => setNewEntry({ ...newEntry, saga: e.target.value })}
-        />
-        <button onClick={handleSaveRecord}>Guardar</button>
-      </div>
+      {/* Tabla de asistencia */}
+      <AttendanceTable selectedDate={selectedDate} estudiantes={estudiantes} />
     </div>
   );
 };

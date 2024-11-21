@@ -1,30 +1,83 @@
-.sidebar ul {
-  list-style: none;
-  padding: 0;
+/* Contenedor principal del sidebar */
+.sidebar-container {
+  position: relative;
+  display: flex;
+  height: 100vh;
 }
 
-.sidebar li {
-  margin-bottom: 10px;
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #f4f4f4;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000; /* Asegura que el sidebar esté encima */
 }
 
-.sidebar a {
-  text-decoration: none;
-  color: #333;
-  font-size: 16px;
-  padding: 10px;
-  display: block;
-  border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
+.sidebar.hidden {
+  transform: translateX(-100%); /* Oculta el sidebar */
 }
 
-.sidebar a:hover {
+.sidebar.visible {
+  transform: translateX(0); /* Muestra el sidebar */
+}
+
+/* Botón para mostrar/ocultar el sidebar */
+.toggle-btn {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
   background-color: #007bff;
-  color: #fff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  z-index: 1500;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar a.selected {
-  background-color: #007bff; /* Fondo azul */
-  color: #ffd700; /* Texto amarillo */
-  font-weight: bold;
-  border: 2px solid #0056b3; /* Borde azul oscuro */
+/* Contenido principal */
+.main-content {
+  margin-left: 250px; /* Espacio cuando el sidebar está visible */
+  transition: margin-left 0.3s ease-in-out;
+  width: 100%; /* Asegura que ocupe todo el espacio disponible */
+}
+
+.sidebar.hidden + .main-content {
+  margin-left: 0; /* Cuando el sidebar está oculto */
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* Ajustar el ancho del sidebar */
+  }
+
+  .main-content {
+    margin-left: 0; /* Contenido ocupa todo el ancho */
+  }
+
+  .toggle-btn {
+    top: 10px; /* Ajustar posición del botón */
+    left: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 150px; /* Más estrecho en pantallas pequeñas */
+  }
+
+  .toggle-btn {
+    font-size: 12px; /* Botón más pequeño */
+    padding: 8px 10px;
+  }
+  
 }

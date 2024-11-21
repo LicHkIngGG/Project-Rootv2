@@ -1,6 +1,5 @@
 /* Variables de tema */
 :root {
-  /* Tema claro (default) */
   --background-color: #f5f5f5;
   --text-color: #333;
   --primary-color: #007bff;
@@ -8,7 +7,6 @@
   --content-background: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.1);
 
-  /* Tema oscuro */
   --background-color-dark: #121212;
   --text-color-dark: #ffffff;
   --primary-color-dark: #1e90ff;
@@ -30,23 +28,23 @@ body {
   color: var(--text-color);
   line-height: 1.6;
   height: 100vh;
-  overflow: hidden;
-  transition: background-color 0.3s, color 0.3s; /* Cambio suave entre temas */
+  overflow: auto; /* Cambiado para permitir scroll */
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* Contenedor principal */
 #root {
-  height: 100vh;
+  height: auto; /* Cambiado para permitir contenido dinámico */
   display: flex;
-  flex-direction: row;
-  overflow: hidden;
+  flex-direction: column; /* Mejor para pantallas pequeñas */
+  overflow: auto; /* Permitir desplazamiento */
 }
 
 /* Layout del Dashboard */
 .dashboard-layout {
   display: flex;
-  flex: 1;
-  height: 100%;
+  flex-direction: row; /* Por defecto, diseño horizontal */
+  height: auto; /* Ajusta según el contenido */
   width: 100%;
 }
 
@@ -108,7 +106,7 @@ body {
 .content > * {
   width: 100%;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 10px auto; /* Ajustado para pantallas pequeñas */
   padding: 20px;
   background-color: var(--content-background);
   border-radius: 8px;
@@ -135,19 +133,34 @@ body.dark-mode .content > * {
 /* Responsivo */
 @media (max-width: 768px) {
   .dashboard-layout {
-    flex-direction: column;
+    flex-direction: column; /* Cambiar a diseño vertical */
   }
 
   .sidebar {
-    width: 100%;
-    height: auto;
+    width: 100%; /* Sidebar ocupa todo el ancho */
+    height: auto; /* Ajustar la altura según contenido */
     box-shadow: none;
     padding: 10px;
   }
 
   .content {
-    padding: 10px;
-    max-width: 100%;
+    padding: 10px; /* Reducir el padding */
+    max-width: 100%; /* Ajustar al ancho de pantalla */
     margin: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    font-size: 14px; /* Reducir tamaño de texto */
+  }
+
+  .sidebar a {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .content > * {
+    padding: 10px; /* Reducir padding interno */
   }
 }

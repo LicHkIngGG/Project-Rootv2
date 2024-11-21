@@ -20,14 +20,16 @@ def registrar_asistencia():
 
         cursor = mysql.connection.cursor()
         query = """
-            INSERT INTO asistencia (usuario_id, curso, timestamp)
+            INSERT INTO asistencia (usuario_id, curso, estado, carrera, timestamp)
             VALUES (
                 (SELECT id FROM usuarios WHERE nombre = %s AND codigo_saga = %s),
+                %s,
+                %s,
                 %s,
                 %s
             )
         """
-        cursor.execute(query, (nombre, saga, paralelo, fecha))
+        cursor.execute(query, (nombre, saga, paralelo, estado, carrera, fecha))
         mysql.connection.commit()
         cursor.close()
 
@@ -36,11 +38,13 @@ def registrar_asistencia():
         print(f"Error al registrar asistencia: {e}")
         return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
 
-# Obtener asistencia por fecha
+# Obtener asistencia con filtros
 @asistencia_bp.route('/api/asistencia', methods=['GET'])
 def obtener_asistencia():
     try:
         fecha = request.args.get('fecha')  # Formato 'YYYY-MM-DD'
+        paralelo = request.args.get('paralelo')  # Filtro opcional
+        carrera = request.args.get('carrera')  # Filtro opcional
 
         if not fecha:
             return jsonify({"status": "error", "message": "La fecha es requerida"}), 400
@@ -52,12 +56,24 @@ def obtener_asistencia():
                 usuarios.nombre AS nombre,
                 usuarios.codigo_saga AS saga,
                 asistencia.curso AS paralelo,
+                asistencia.estado AS estado,
+                asistencia.carrera AS carrera,
                 asistencia.timestamp AS fecha
             FROM asistencia
             INNER JOIN usuarios ON asistencia.usuario_id = usuarios.id
             WHERE DATE(asistencia.timestamp) = %s
         """
-        cursor.execute(query, (fecha,))
+        params = [fecha]
+
+        # Añadir filtros opcionales si existen
+        if paralelo:
+            query += " AND asistencia.curso = %s"
+            params.append(paralelo)
+        if carrera:
+            query += " AND asistencia.carrera = %s"
+            params.append(carrera)
+
+        cursor.execute(query, tuple(params))
         registros = cursor.fetchall()
         cursor.close()
 
@@ -68,7 +84,9 @@ def obtener_asistencia():
                 "nombre": row[1],
                 "saga": row[2],
                 "paralelo": row[3],
-                "fecha": row[4].strftime('%Y-%m-%d')
+                "estado": row[4],
+                "carrera": row[5],
+                "fecha": row[6].strftime('%Y-%m-%d')
             }
             for row in registros
         ]
@@ -77,3 +95,4 @@ def obtener_asistencia():
     except Exception as e:
         print(f"Error al obtener asistencia: {e}")
         return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
+

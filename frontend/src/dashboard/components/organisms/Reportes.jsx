@@ -1,112 +1,165 @@
-import React, { useEffect, useState } from 'react';
-import {
-  PieChart, Pie, Cell, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-} from 'recharts';
-import './Reportes.css';
-
-const COLORS = ['#0088FE', '#FFBB28', '#FF8042'];
+import React, { useState, useEffect } from "react";
+import "./Reportes.css";
 
 const Reportes = () => {
+  const [filtroAsistencia, setFiltroAsistencia] = useState("mes");
+  const [carrera, setCarrera] = useState("");
+  const [paralelo, setParalelo] = useState("");
   const [asistenciaData, setAsistenciaData] = useState([]);
   const [aperturaData, setAperturaData] = useState([]);
-  const [filtroAsistencia, setFiltroAsistencia] = useState('mes'); // Filtro inicial para asistencia
+  const [carreras, setCarreras] = useState([]);
 
-  // Función para manejar el cambio de filtro de asistencia
-  const handleFiltroAsistenciaChange = async (event) => {
-    const nuevoFiltro = event.target.value;
-    setFiltroAsistencia(nuevoFiltro);
-    await fetchAsistenciaData(nuevoFiltro);
-  };
+  const paralelos = [
+    "1er semestre",
+    "2do semestre",
+    "3er semestre",
+    "4to semestre",
+    "5to semestre",
+    "6to semestre",
+    "7mo semestre",
+    "8vo semestre",
+    "9no semestre",
+    "10mo semestre",
+  ];
 
-  // Función para obtener datos de asistencia desde el backend
-  const fetchAsistenciaData = async (filtro) => {
+  useEffect(() => {
+    const fetchCarreras = async () => {
+      try {
+        const response = await fetch("/api/carreras");
+        const data = await response.json();
+        if (data.status === "success") {
+          setCarreras(data.data);
+        } else {
+          console.error(data.message);
+        }
+      } catch (error) {
+        console.error("Error al obtener carreras:", error);
+      }
+    };
+
+    fetchCarreras();
+  }, []);
+
+  const fetchAsistencia = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/reportes/asistencia?filtro=${filtro}`);
+      const query = new URLSearchParams({
+        filtro: filtroAsistencia,
+        carrera,
+        paralelo,
+      }).toString();
+      const response = await fetch(`/api/reportes/asistencia?${query}`);
       const data = await response.json();
-      if (data.status === 'success') {
+      if (data.status === "success") {
         setAsistenciaData(data.data);
       } else {
-        console.error('Error al obtener datos de asistencia:', data.message);
+        console.error(data.message);
       }
     } catch (error) {
-      console.error('Error al conectar con el servidor:', error);
+      console.error("Error al obtener estadísticas de asistencia:", error);
     }
   };
 
-  // Función para obtener datos de apertura desde el backend
-  const fetchAperturaData = async () => {
+  const fetchAperturas = async () => {
     try {
-      const response = await fetch('http://192.168.40.102:5000/api/reportes/apertura');
+      const response = await fetch(`/api/reportes/apertura`);
       const data = await response.json();
-      if (data.status === 'success') {
+      if (data.status === "success") {
         setAperturaData(data.data);
       } else {
-        console.error('Error al obtener datos de apertura:', data.message);
+        console.error(data.message);
       }
     } catch (error) {
-      console.error('Error al conectar con el servidor:', error);
+      console.error("Error al obtener estadísticas de aperturas:", error);
     }
   };
 
-  // Cargar datos al montar el componente
   useEffect(() => {
-    fetchAsistenciaData(filtroAsistencia);
-    fetchAperturaData();
-  }, [filtroAsistencia]);
+    fetchAsistencia();
+    fetchAperturas();
+  }, [filtroAsistencia, carrera, paralelo]);
 
   return (
-    <div className="dashboard-reportes">
-      <div className="grafica-container">
-        <h2>Estadísticas de Asistencia</h2>
-        <div className="filtro-container">
-          <label htmlFor="filtro-asistencia">Seleccionar intervalo:</label>
-          <select
-            id="filtro-asistencia"
-            value={filtroAsistencia}
-            onChange={handleFiltroAsistenciaChange}
-          >
-            <option value="dia">Día</option>
-            <option value="semana">Semana</option>
-            <option value="mes">Mes</option>
-          </select>
-        </div>
-        <PieChart width={400} height={400}>
-          <Pie
-            data={asistenciaData}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={120}
-            fill="#8884d8"
-            label
-          >
-            {asistenciaData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Legend />
-        </PieChart>
-      </div>
+    <div className="reportes-container">
+      <h1 className="reportes-title">Reportes</h1>
 
-      <div className="grafica-container">
-        <h2>Aperturas por Semana</h2>
-        <BarChart
-          width={500}
-          height={300}
-          data={aperturaData}
-          margin={{
-            top: 20, right: 30, left: 20, bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="Aperturas" fill="#82ca9d" />
-        </BarChart>
-      </div>
+      {/* Reporte de Asistencia */}
+      <section className="reporte-section">
+        <h2 className="section-title">Reporte de Asistencia</h2>
+        <div className="filtro-container">
+          <div className="filtro-item">
+            <label>Filtro de Fecha:</label>
+            <select
+              onChange={(e) => setFiltroAsistencia(e.target.value)}
+              value={filtroAsistencia}
+            >
+              <option value="dia">Día</option>
+              <option value="semana">Semana</option>
+              <option value="mes">Mes</option>
+            </select>
+          </div>
+          <div className="filtro-item">
+            <label>Carrera:</label>
+            <select
+              onChange={(e) => setCarrera(e.target.value)}
+              value={carrera}
+            >
+              <option value="">Todas las Carreras</option>
+              {carreras.map((carrera, index) => (
+                <option key={index} value={carrera}>
+                  {carrera}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="filtro-item">
+            <label>Paralelo:</label>
+            <select
+              onChange={(e) => setParalelo(e.target.value)}
+              value={paralelo}
+            >
+              <option value="">Todos los Paralelos</option>
+              {paralelos.map((p, index) => (
+                <option key={index} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="resultados-container">
+          <h3>Resultados de Asistencia</h3>
+          {asistenciaData.length > 0 ? (
+            <ul>
+              {asistenciaData.map((item, index) => (
+                <li key={index}>
+                  {item.name}: {item.value}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No hay datos disponibles.</p>
+          )}
+        </div>
+      </section>
+
+      {/* Reporte de Aperturas */}
+      <section className="reporte-section">
+        <h2 className="section-title">Reporte de Aperturas</h2>
+        <div className="resultados-container">
+          <h3>Resultados de Aperturas</h3>
+          {aperturaData.length > 0 ? (
+            <ul>
+              {aperturaData.map((item, index) => (
+                <li key={index}>
+                  {item.name}: {item.Aperturas}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No hay datos disponibles.</p>
+          )}
+        </div>
+      </section>
     </div>
   );
 };

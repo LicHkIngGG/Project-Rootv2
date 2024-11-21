@@ -1,62 +1,78 @@
-.calendar-wrapper {
+/* Contenedor principal */
+.calendar-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: column; /* Organiza elementos verticalmente */
+  align-items: center; /* Centra horizontalmente */
+  gap: 20px; /* Espaciado entre elementos */
   padding: 20px;
+  width: 100%;
 }
 
-.calendar-content {
+/* Título principal */
+.page-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Sección del calendario */
+.calendar-section {
   width: 100%;
-  max-width: 800px;
-  margin: 20px auto;
-  background-color: #fff;
+  max-width: 800px; /* Límite de ancho */
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column; /* Elementos apilados */
+  gap: 20px; /* Espaciado interno */
+}
+
+/* Estilos para el calendario */
+.react-calendar {
+  width: 100%;
+  max-width: 700px; /* Límite del ancho */
+  margin: 0 auto;
+}
+
+.react-calendar__tile {
+  text-align: center;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #000; /* Números en negro */
+}
+
+.react-calendar__tile--active {
+  background: #007bff;
+  color: #fff; /* Números blancos en el día seleccionado */
+  border-radius: 4px;
+}
+
+/* Tabla de asistencia */
+.attendance-table {
+  width: 100%;
+  max-width: 800px; /* Límite del ancho */
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
-  justify-content: center;
-}
-
-.attendance-details {
-  margin-top: 20px;
-  overflow-x: auto; 
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #f4f4f4;
-}
-
+/* Responsividad */
 @media (max-width: 768px) {
-  .calendar-content {
-    width: 100%;
-    padding: 10px;
+  .calendar-section {
+    max-width: 100%;
+    padding: 15px;
   }
 
-  .buttons {
-    flex-direction: column;
+  .react-calendar {
+    max-width: 100%;
   }
 
-  table {
-    font-size: 12px;
+  .attendance-table {
+    max-width: 100%;
   }
 }
-

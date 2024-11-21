@@ -1,1 +1,4 @@
-venv/
+# Ignorar venv del backend
+backend/venv/
+# Ignorar entornos virtuales
+.env

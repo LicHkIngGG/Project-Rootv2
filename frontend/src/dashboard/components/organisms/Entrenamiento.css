@@ -1,0 +1,112 @@
+/* Contenedor principal */
+.training-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 40px auto;
+  }
+  
+  /* Título del módulo */
+  .training-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Descripción del módulo */
+  .training-description {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 30px;
+  }
+  
+  /* Botón de entrenamiento */
+  .train-button {
+    padding: 15px 25px;
+    font-size: 16px;
+    color: white;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .train-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+  }
+  
+  .train-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Mensaje de éxito */
+  .success-message {
+    font-size: 14px;
+    color: #4CAF50;
+    margin-top: 15px;
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* Animación de carga */
+  .loading-animation {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #4CAF50;
+    border-radius: 50%;
+    margin: 20px auto;
+    animation: spin 1s linear infinite;
+  }
+  
+  /* Keyframes para animaciones */
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Responsividad para pantallas pequeñas */
+  @media (max-width: 768px) {
+    .training-container {
+      padding: 15px;
+      margin: 20px auto;
+    }
+  
+    .training-title {
+      font-size: 20px;
+    }
+  
+    .training-description {
+      font-size: 14px;
+    }
+  
+    .train-button {
+      font-size: 14px;
+      padding: 12px 20px;
+    }
+  
+    .loading-animation {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  

@@ -9,6 +9,7 @@ from routes.entrenamiento import entrenamiento_bp
 from routes.reconocimiento import reconocimiento_bp
 from routes.reportes import reportes_bp
 from routes.auth import auth_bp
+from routes.carreras import carreras_bp
 
 app = Flask(__name__)
 CORS(app, origins="*")
@@ -28,6 +29,7 @@ app.register_blueprint(entrenamiento_bp, url_prefix='/api/entrenamiento')
 app.register_blueprint(reconocimiento_bp, url_prefix='/api/reconocimiento')  
 app.register_blueprint(reportes_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(carreras_bp)
 
 if __name__ == '__main__':
     app.debug = True
