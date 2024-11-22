@@ -1,20 +1,25 @@
 import React, { useState } from "react";
-import "./Entrenamiento.css";
 
 function Entrenamiento() {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleTrain = async () => {
     setLoading(true);
-    setSuccess(false);
+    setMessage("");
     try {
       const response = await fetch("/api/train", { method: "POST" });
       const result = await response.json();
-      setSuccess(true);
-      alert(result.message);
+
+      if (response.ok) {
+        setMessage(result.message);
+        alert("Entrenamiento completado exitosamente.");
+      } else {
+        alert(result.message || "Error durante el entrenamiento.");
+      }
     } catch (error) {
-      alert("Ocurrió un error durante el entrenamiento.");
+      console.error("Error durante el entrenamiento:", error);
+      alert("Error al conectar con el backend.");
     } finally {
       setLoading(false);
     }
@@ -22,17 +27,11 @@ function Entrenamiento() {
 
   return (
     <div className="training-container">
-      <h1 className="training-title">Entrenamiento de Reconocimiento Facial</h1>
-      <p className="training-description">
-        Este proceso entrenará el modelo de reconocimiento facial con los datos registrados.
-      </p>
-      <div className="button-container">
-        <button className={`train-button ${loading ? "loading" : ""}`} onClick={handleTrain} disabled={loading}>
-          {loading ? "Entrenando..." : "Iniciar Entrenamiento"}
-        </button>
-        {success && <p className="success-message">¡Entrenamiento completado con éxito!</p>}
-      </div>
-      {loading && <div className="loading-animation"></div>}
+      <h1>Entrenamiento de Reconocimiento</h1>
+      <button onClick={handleTrain} disabled={loading}>
+        {loading ? "Entrenando..." : "Iniciar Entrenamiento"}
+      </button>
+      {message && <p>{message}</p>}
     </div>
   );
 }

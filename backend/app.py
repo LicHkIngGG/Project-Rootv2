@@ -10,6 +10,9 @@ from routes.reconocimiento import reconocimiento_bp
 from routes.reportes import reportes_bp
 from routes.auth import auth_bp
 from routes.carreras import carreras_bp
+from routes.paralelos import paralelos_bp
+
+
 
 app = Flask(__name__)
 CORS(app, origins="*")
@@ -30,7 +33,7 @@ app.register_blueprint(reconocimiento_bp, url_prefix='/api/reconocimiento')
 app.register_blueprint(reportes_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(carreras_bp)
-
+app.register_blueprint(paralelos_bp)
 if __name__ == '__main__':
     app.debug = True
     socketio.run(app, host='0.0.0.0', port=5000)

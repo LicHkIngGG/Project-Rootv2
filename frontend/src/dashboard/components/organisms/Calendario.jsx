@@ -4,6 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import Filters from "../atoms/Filters";
 import AddEntry from "../atoms/AddEntry";
 import AttendanceTable from "../atoms/AttendanceTable";
+import { CSVLink } from "react-csv";
 import "./Calendario.css";
 
 const Calendario = () => {
@@ -11,13 +12,13 @@ const Calendario = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [filters, setFilters] = useState({ paralelo: "", carrera_id: "" });
   const [carreras, setCarreras] = useState([]);
+  const [paralelos, setParalelos] = useState([]);
   const [newCarrera, setNewCarrera] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  // Cambiar esta URL a la IP de tu servidor
   const BASE_URL = "http://127.0.0.1:5000";
 
-  // Obtener carreras al cargar la página
+  // Obtener carreras y paralelos al cargar la página
   useEffect(() => {
     const fetchCarreras = async () => {
       try {
@@ -25,7 +26,6 @@ const Calendario = () => {
         const data = await response.json();
         if (data.status === "success") {
           setCarreras(data.data);
-          console.log("Carreras recibidas:", data.data); // Confirmar datos
         } else {
           console.error(data.message);
         }
@@ -33,7 +33,23 @@ const Calendario = () => {
         console.error("Error al obtener carreras:", error);
       }
     };
+
+    const fetchParalelos = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/paralelos`);
+        const data = await response.json();
+        if (data.status === "success") {
+          setParalelos(data.data);
+        } else {
+          console.error(data.message);
+        }
+      } catch (error) {
+        console.error("Error al obtener paralelos:", error);
+      }
+    };
+
     fetchCarreras();
+    fetchParalelos();
   }, []);
 
   // Obtener asistencia
@@ -82,7 +98,7 @@ const Calendario = () => {
       const data = await response.json();
       if (data.status === "success") {
         alert("Carrera añadida con éxito.");
-        setCarreras([...carreras, newCarrera]);
+        setCarreras([...carreras, { id: data.id, nombre: newCarrera }]);
         setNewCarrera("");
         setShowModal(false);
       } else {
@@ -125,38 +141,39 @@ const Calendario = () => {
       <div className="calendar-section">
         <h2>Calendario de Asistencia</h2>
         <Calendar onClickDay={handleDateClick} />
-        <h3>Filtrar por Carrera</h3>
-        <select>
-          <option value="">Seleccionar Carrera</option>
-          {carreras &&
-          carreras.map((carrera, index) => (
-          <option key={index} value={carrera.nombre}>
-          {carrera.nombre}
-          </option>
-        ))}
-        </select>
 
+        {/* Filtros */}
+        <Filters
+          filters={filters}
+          carreras={carreras}
+          paralelos={paralelos}
+          onFilterChange={handleFilterChange}
+        />
 
+        {/* Botón Exportar CSV */}
+        <CSVLink
+          data={estudiantes}
+          filename={`asistencia_${selectedDate || "sin_fecha"}.csv`}
+          className="csv-download-button"
+        >
+          Exportar CSV
+        </CSVLink>
+
+        {/* Añadir Manualmente */}
         <AddEntry
           selectedDate={selectedDate}
           carreras={carreras}
-          paralelos={[
-            "1er semestre",
-            "2do semestre",
-            "3er semestre",
-            "4to semestre",
-            "5to semestre",
-            "6to semestre",
-            "7mo semestre",
-            "8vo semestre",
-            "9no semestre",
-            "10mo semestre",
-          ]}
+          paralelos={paralelos}
           fetchAsistencia={fetchAsistencia}
         />
-      </div>
 
-      <AttendanceTable selectedDate={selectedDate} estudiantes={estudiantes} />
+        {/* Tabla de asistencia */}
+        {estudiantes.length > 0 ? (
+          <AttendanceTable selectedDate={selectedDate} estudiantes={estudiantes} />
+        ) : (
+          <p>No hay registros para esta fecha.</p>
+        )}
+      </div>
     </div>
   );
 };

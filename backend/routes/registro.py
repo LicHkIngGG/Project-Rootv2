@@ -6,7 +6,7 @@ from extensions import mysql
 registro_bp = Blueprint("registro_bp", __name__)
 
 # Ruta para almacenar imágenes capturadas y datos de usuario
-DATA_PATH = "C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Data"
+DATA_PATH = "C:/Users/Frostmourne/Desktop/causa/data"
 
 @registro_bp.route("/register", methods=["POST"])
 def registrar_usuario():
@@ -15,35 +15,35 @@ def registrar_usuario():
     try:
         # Validar los datos recibidos
         nombre = data.get("nombre")
-        codigo = data.get("codigo")
-        email = data.get("email")
-        semestre = data.get("semestre")
-        carrera = data.get("carrera")
+        codigo_saga = data.get("codigo_saga")
+        paralelo_id = data.get("paralelo_id")
+        carrera_id = data.get("carrera_id")
+        estado = data.get("estado", "activo")  # Por defecto "activo"
         imagenes = data.get("imagenes", [])  # Lista de imágenes en formato base64
 
-        if not all([nombre, codigo, email, semestre, carrera, imagenes]):
+        if not all([nombre, codigo_saga, paralelo_id, carrera_id, imagenes]):
             return jsonify({"message": "Faltan datos obligatorios"}), 400
 
         if len(imagenes) < 10:
             return jsonify({"message": "Se requieren al menos 10 imágenes"}), 400
 
-        # Verificar si el código ya existe en la base de datos
+        # Verificar si el código_saga ya existe en la base de datos
         cursor = mysql.connection.cursor()
-        cursor.execute("SELECT id FROM usuarios WHERE codigo = %s", (codigo,))
+        cursor.execute("SELECT id FROM estudiantes WHERE codigo_saga = %s", (codigo_saga,))
         if cursor.fetchone():
             return jsonify({"message": "El código ya está registrado"}), 400
 
-        # Insertar datos personales en la base de datos
+        # Insertar datos personales en la tabla "estudiantes"
         query = """
-            INSERT INTO usuarios (nombre, codigo, email, semestre, carrera)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO estudiantes (nombre, codigo_saga, paralelo_id, carrera_id, estado, fecha_registro)
+            VALUES (%s, %s, %s, %s, %s, NOW())
         """
-        cursor.execute(query, (nombre, codigo, email, semestre, carrera))
+        cursor.execute(query, (nombre, codigo_saga, paralelo_id, carrera_id, estado))
         mysql.connection.commit()
-        usuario_id = cursor.lastrowid
+        estudiante_id = cursor.lastrowid
 
         # Crear carpeta para almacenar imágenes
-        usuario_path = os.path.join(DATA_PATH, codigo)
+        usuario_path = os.path.join(DATA_PATH, codigo_saga)
         os.makedirs(usuario_path, exist_ok=True)
 
         # Decodificar y guardar cada imagen
@@ -58,9 +58,9 @@ def registrar_usuario():
                 with open(file_path, "wb") as f:
                     f.write(image_data)
 
-                # Registrar imagen en la base de datos
-                img_query = "INSERT INTO imagenes (usuario_id, ruta_imagen) VALUES (%s, %s)"
-                cursor.execute(img_query, (usuario_id, file_path))
+                # Registrar imagen en la tabla "imagenes"
+                img_query = "INSERT INTO imagenes (estudiante_id, ruta_imagen) VALUES (%s, %s)"
+                cursor.execute(img_query, (estudiante_id, file_path))
             except Exception as img_error:
                 print(f"Error al guardar la imagen {idx + 1}: {img_error}")
                 return jsonify({"message": "Error al procesar las imágenes"}), 500

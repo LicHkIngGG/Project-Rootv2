@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./Reportes.css";
 
+const BASE_URL = "http://127.0.0.1:5000"; // URL del backend
+
 const Reportes = () => {
   const [filtroAsistencia, setFiltroAsistencia] = useState("mes");
   const [carrera, setCarrera] = useState("");
@@ -8,37 +10,41 @@ const Reportes = () => {
   const [asistenciaData, setAsistenciaData] = useState([]);
   const [aperturaData, setAperturaData] = useState([]);
   const [carreras, setCarreras] = useState([]);
+  const [paralelos, setParalelos] = useState([]); // Nueva lista de paralelos desde el backend
 
-  const paralelos = [
-    "1er semestre",
-    "2do semestre",
-    "3er semestre",
-    "4to semestre",
-    "5to semestre",
-    "6to semestre",
-    "7mo semestre",
-    "8vo semestre",
-    "9no semestre",
-    "10mo semestre",
-  ];
-
+  // Cargar carreras y paralelos al montar el componente
   useEffect(() => {
-    const fetchCarreras = async () => {
-      try {
-        const response = await fetch("/api/carreras");
-        const data = await response.json();
-        if (data.status === "success") {
-          setCarreras(data.data);
-        } else {
-          console.error(data.message);
-        }
-      } catch (error) {
-        console.error("Error al obtener carreras:", error);
-      }
-    };
-
     fetchCarreras();
+    fetchParalelos();
   }, []);
+
+  const fetchCarreras = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/carreras`);
+      const data = await response.json();
+      if (data.status === "success") {
+        setCarreras(data.data);
+      } else {
+        console.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error al obtener carreras:", error);
+    }
+  };
+
+  const fetchParalelos = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/paralelos`);
+      const data = await response.json();
+      if (data.status === "success") {
+        setParalelos(data.data);
+      } else {
+        console.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error al obtener paralelos:", error);
+    }
+  };
 
   const fetchAsistencia = async () => {
     try {
@@ -47,7 +53,7 @@ const Reportes = () => {
         carrera,
         paralelo,
       }).toString();
-      const response = await fetch(`/api/reportes/asistencia?${query}`);
+      const response = await fetch(`${BASE_URL}/api/reportes/asistencia?${query}`);
       const data = await response.json();
       if (data.status === "success") {
         setAsistenciaData(data.data);
@@ -61,7 +67,7 @@ const Reportes = () => {
 
   const fetchAperturas = async () => {
     try {
-      const response = await fetch(`/api/reportes/apertura`);
+      const response = await fetch(`${BASE_URL}/api/reportes/apertura`);
       const data = await response.json();
       if (data.status === "success") {
         setAperturaData(data.data);
@@ -73,6 +79,7 @@ const Reportes = () => {
     }
   };
 
+  // Actualizar datos cada vez que cambien los filtros
   useEffect(() => {
     fetchAsistencia();
     fetchAperturas();
@@ -104,9 +111,9 @@ const Reportes = () => {
               value={carrera}
             >
               <option value="">Todas las Carreras</option>
-              {carreras.map((carrera, index) => (
-                <option key={index} value={carrera}>
-                  {carrera}
+              {carreras.map((carrera) => (
+                <option key={carrera.id} value={carrera.id}>
+                  {carrera.nombre}
                 </option>
               ))}
             </select>
@@ -118,9 +125,9 @@ const Reportes = () => {
               value={paralelo}
             >
               <option value="">Todos los Paralelos</option>
-              {paralelos.map((p, index) => (
-                <option key={index} value={p}>
-                  {p}
+              {paralelos.map((paralelo) => (
+                <option key={paralelo.id} value={paralelo.id}>
+                  {paralelo.nombre}
                 </option>
               ))}
             </select>

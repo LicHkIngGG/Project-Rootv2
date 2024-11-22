@@ -4,10 +4,10 @@ import numpy as np
 from sklearn.svm import SVC
 import joblib
 from collections import Counter
-from routes.embeddings import generar_embeddings  # Importa la función para generar embeddings
+from routes.embeddings import generar_embeddings  
 
-EMBEDDINGS_PATH = "C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Embeddings"
-MODELS_PATH = 'C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Modelos'
+EMBEDDINGS_PATH = "C:/Users/Frostmourne/Desktop/causa/Embeddings"
+MODELS_PATH = 'C:/Users/Frostmourne/Desktop/causa/modelos'
 
 entrenamiento_bp = Blueprint("entrenamiento_bp", __name__)
 

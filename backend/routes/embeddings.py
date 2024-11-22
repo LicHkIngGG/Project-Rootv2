@@ -4,8 +4,8 @@ from keras_facenet import FaceNet
 import cv2
 
 # Rutas de las imágenes y embeddings
-IMAGES_PATH = "C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Data"
-EMBEDDINGS_PATH = "C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Embeddings"
+IMAGES_PATH = "C:/Users/Frostmourne/Desktop/causa/data"
+EMBEDDINGS_PATH = "C:/Users/Frostmourne/Desktop/causa/Embeddings"
 
 # Inicializa el modelo FaceNet
 embedder = FaceNet()

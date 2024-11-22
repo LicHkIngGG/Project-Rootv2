@@ -15,6 +15,40 @@
   background-color: #45a049;
 }
 
+/* Botón CSV */
+.csv-download-button {
+  margin: 10px 0;
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.csv-download-button:hover {
+  background-color: #0056b3;
+}
+
+/* Botón Añadir Manualmente */
+.add-entry-button {
+  margin: 10px 0;
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-entry-button:hover {
+  background-color: #e68900;
+}
+
 /* Modal */
 .modal {
   position: fixed;
@@ -78,38 +112,65 @@
 .modal-buttons button:hover {
   opacity: 0.9;
 }
-/* Ajustar el diseño del dropdown */
-select {
-  width: 100%; /* Asegura que ocupe todo el espacio disponible */
-  padding: 8px; /* Espaciado interno */
-  font-size: 14px; /* Tamaño de texto */
-  border: 1px solid #ccc; /* Borde visible */
-  border-radius: 4px; /* Bordes redondeados */
-  background-color: #fff; /* Fondo blanco */
-  appearance: none; /* Elimina los estilos predeterminados */
+
+/* Tabla de asistencia */
+.attendance-table {
+  margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* Opciones del dropdown */
-select option {
-  font-size: 14px; /* Tamaño consistente */
-  color: #333; /* Texto legible */
+.attendance-table th,
+.attendance-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
 }
 
-/* Para asegurar que el dropdown sea visible */
-.select-container {
-  position: relative; /* Asegura que el dropdown se posicione correctamente */
-  z-index: 10; /* Asegura que el dropdown esté por encima de otros elementos */
+.attendance-table th {
+  background-color: #f4f4f4;
+  color: #333;
 }
 
-/* Solución para posibles problemas de altura */
-select:focus {
-  outline: none; /* Elimina el contorno al seleccionar */
-  border-color: #4caf50; /* Resalta el borde al enfocar */
+.attendance-table tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
-select {
+
+.attendance-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Dropdown para filtros */
+.filters-and-actions select {
+  width: 100%;
   padding: 8px;
   font-size: 14px;
-  color: #333;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Estilo general del contenedor */
+.calendar-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-container .page-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.calendar-section {
+  margin-top: 20px;
+}
+
+.calendar-section h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
 }

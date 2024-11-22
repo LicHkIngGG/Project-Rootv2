@@ -1,24 +1,55 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./RegistroN.css";
+
+const BASE_URL = "http://127.0.0.1:5000"; // URL del backend
 
 function RegistroN() {
   const [formData, setFormData] = useState({
     name: "",
     code: "",
     email: "",
-    semester: "",
-    career: "",
+    semester_id: "",
+    career_id: "",
   });
-
+  const [carreras, setCarreras] = useState([]);
+  const [paralelos, setParalelos] = useState([]);
   const [capturedImageCount, setCapturedImageCount] = useState(0);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const videoRef = useRef(null);
 
+  // Cargar carreras y paralelos al cargar el componente
   useEffect(() => {
-    if (capturedImageCount === 400) {
-      alert("Captura completa: 400 imágenes guardadas");
+    fetchCarreras();
+    fetchParalelos();
+  }, []);
+
+  const fetchCarreras = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/carreras`);
+      const data = await response.json();
+      if (data.status === "success") {
+        setCarreras(data.data);
+      } else {
+        alert("Error al cargar carreras");
+      }
+    } catch (error) {
+      console.error("Error al obtener carreras:", error);
     }
-  }, [capturedImageCount]);
+  };
+
+  const fetchParalelos = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/paralelos`);
+      const data = await response.json();
+      if (data.status === "success") {
+        setParalelos(data.data);
+      } else {
+        alert("Error al cargar paralelos");
+      }
+    } catch (error) {
+      console.error("Error al obtener paralelos:", error);
+    }
+  };
 
   const startCamera = () => {
     navigator.mediaDevices
@@ -61,33 +92,34 @@ function RegistroN() {
 
     const dataUrl = canvas.toDataURL("image/jpeg");
 
-    try {
-      const response = await fetch("http://192.168.0.10:5000/api/registro/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...formData, image: dataUrl }),
-      });
-
-      if (response.ok) {
-        setCapturedImageCount((prev) => prev + 1);
-      } else {
-        alert("Error al guardar la imagen en el backend.");
-      }
-    } catch (error) {
-      console.error("Error al enviar los datos:", error);
-      alert("Error al enviar los datos. Intenta nuevamente.");
-    }
+    setCapturedImageCount((prev) => prev + 1);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (capturedImageCount < 400) {
       alert("Asegúrate de capturar 400 imágenes antes de enviar.");
       return;
     }
-    alert("Datos registrados correctamente.");
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/registro/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Usuario registrado con éxito.");
+      } else {
+        alert("Error al registrar usuario.");
+      }
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+    }
   };
 
   return (
@@ -123,23 +155,37 @@ function RegistroN() {
         </label>
         <label>
           Semestre:
-          <input
-            type="text"
-            value={formData.semester}
+          <select
+            value={formData.semester_id}
             onChange={(e) =>
-              setFormData({ ...formData, semester: e.target.value })
+              setFormData({ ...formData, semester_id: e.target.value })
             }
             required
-          />
+          >
+            <option value="">Selecciona un semestre</option>
+            {paralelos.map((paralelo) => (
+              <option key={paralelo.id} value={paralelo.id}>
+                {paralelo.nombre}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           Carrera:
-          <input
-            type="text"
-            value={formData.career}
-            onChange={(e) => setFormData({ ...formData, career: e.target.value })}
+          <select
+            value={formData.career_id}
+            onChange={(e) =>
+              setFormData({ ...formData, career_id: e.target.value })
+            }
             required
-          />
+          >
+            <option value="">Selecciona una carrera</option>
+            {carreras.map((carrera) => (
+              <option key={carrera.id} value={carrera.id}>
+                {carrera.nombre}
+              </option>
+            ))}
+          </select>
         </label>
         <div className="video-section">
           <video ref={videoRef} autoPlay></video>

@@ -1,50 +1,15 @@
 from flask import Blueprint, request, jsonify
 from extensions import mysql
 
-asistencia_bp = Blueprint('asistencia', __name__)
-
-# Registrar asistencia
-@asistencia_bp.route('/api/asistencia', methods=['POST'])
-def registrar_asistencia():
-    try:
-        data = request.json
-        nombre = data.get('nombre')
-        saga = data.get('saga')
-        paralelo = data.get('paralelo')
-        estado = data.get('estado')
-        carrera = data.get('carrera')
-        fecha = data.get('fecha')  # Debe venir en formato 'YYYY-MM-DD'
-
-        if not (nombre and saga and paralelo and estado and carrera and fecha):
-            return jsonify({"status": "error", "message": "Todos los campos son obligatorios"}), 400
-
-        cursor = mysql.connection.cursor()
-        query = """
-            INSERT INTO asistencia (usuario_id, curso, estado, carrera, timestamp)
-            VALUES (
-                (SELECT id FROM usuarios WHERE nombre = %s AND codigo_saga = %s),
-                %s,
-                %s,
-                %s,
-                %s
-            )
-        """
-        cursor.execute(query, (nombre, saga, paralelo, estado, carrera, fecha))
-        mysql.connection.commit()
-        cursor.close()
-
-        return jsonify({"status": "success", "message": "Asistencia registrada"}), 201
-    except Exception as e:
-        print(f"Error al registrar asistencia: {e}")
-        return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
+asistencia_bp = Blueprint("asistencia_bp", __name__)
 
 # Obtener asistencia con filtros
-@asistencia_bp.route('/api/asistencia', methods=['GET'])
+@asistencia_bp.route("/api/asistencia", methods=["GET"])
 def obtener_asistencia():
     try:
-        fecha = request.args.get('fecha')  # Formato 'YYYY-MM-DD'
-        paralelo = request.args.get('paralelo')  # Filtro opcional
-        carrera = request.args.get('carrera')  # Filtro opcional
+        fecha = request.args.get("fecha")
+        paralelo = request.args.get("paralelo")
+        carrera_id = request.args.get("carrera_id")
 
         if not fecha:
             return jsonify({"status": "error", "message": "La fecha es requerida"}), 400
@@ -52,32 +17,31 @@ def obtener_asistencia():
         cursor = mysql.connection.cursor()
         query = """
             SELECT
-                usuarios.id AS id,
-                usuarios.nombre AS nombre,
-                usuarios.codigo_saga AS saga,
-                asistencia.curso AS paralelo,
+                estudiantes.id AS id,
+                estudiantes.nombre AS nombre,
+                estudiantes.codigo_saga AS saga,
+                estudiantes.paralelo_id AS paralelo,
                 asistencia.estado AS estado,
-                asistencia.carrera AS carrera,
+                carreras.nombre AS carrera,
                 asistencia.timestamp AS fecha
             FROM asistencia
-            INNER JOIN usuarios ON asistencia.usuario_id = usuarios.id
+            INNER JOIN estudiantes ON asistencia.usuario_id = estudiantes.id
+            INNER JOIN carreras ON estudiantes.carrera_id = carreras.id
             WHERE DATE(asistencia.timestamp) = %s
         """
         params = [fecha]
 
-        # Añadir filtros opcionales si existen
         if paralelo:
-            query += " AND asistencia.curso = %s"
+            query += " AND estudiantes.paralelo_id = %s"
             params.append(paralelo)
-        if carrera:
-            query += " AND asistencia.carrera = %s"
-            params.append(carrera)
+        if carrera_id:
+            query += " AND estudiantes.carrera_id = %s"
+            params.append(carrera_id)
 
         cursor.execute(query, tuple(params))
         registros = cursor.fetchall()
         cursor.close()
 
-        # Formatear los datos para el frontend
         data = [
             {
                 "id": row[0],
@@ -96,3 +60,109 @@ def obtener_asistencia():
         print(f"Error al obtener asistencia: {e}")
         return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
 
+
+# Añadir un registro de asistencia
+@asistencia_bp.route("/api/asistencia", methods=["POST"])
+def agregar_asistencia():
+    try:
+        data = request.json
+        usuario_id = data.get("usuario_id")
+        estado = data.get("estado")
+        fecha = data.get("fecha")
+
+        if not all([usuario_id, estado, fecha]):
+            return jsonify({"status": "error", "message": "Todos los campos son obligatorios"}), 400
+
+        cursor = mysql.connection.cursor()
+        query = """
+            INSERT INTO asistencia (usuario_id, estado, timestamp)
+            VALUES (%s, %s, %s)
+        """
+        cursor.execute(query, (usuario_id, estado, fecha))
+        mysql.connection.commit()
+        cursor.close()
+
+        return jsonify({"status": "success", "message": "Asistencia registrada con éxito"}), 201
+    except Exception as e:
+        print(f"Error al agregar asistencia: {e}")
+        return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
+
+
+# Actualizar un registro de asistencia
+@asistencia_bp.route("/api/asistencia/<int:asistencia_id>", methods=["PUT"])
+def actualizar_asistencia(asistencia_id):
+    try:
+        data = request.json
+        estado = data.get("estado")
+
+        if not estado:
+            return jsonify({"status": "error", "message": "El estado es obligatorio"}), 400
+
+        cursor = mysql.connection.cursor()
+        query = "UPDATE asistencia SET estado = %s WHERE id = %s"
+        cursor.execute(query, (estado, asistencia_id))
+        mysql.connection.commit()
+        cursor.close()
+
+        return jsonify({"status": "success", "message": "Asistencia actualizada con éxito"}), 200
+    except Exception as e:
+        print(f"Error al actualizar asistencia: {e}")
+        return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
+
+
+# Eliminar un registro de asistencia
+@asistencia_bp.route("/api/asistencia/<int:asistencia_id>", methods=["DELETE"])
+def eliminar_asistencia(asistencia_id):
+    try:
+        cursor = mysql.connection.cursor()
+        query = "DELETE FROM asistencia WHERE id = %s"
+        cursor.execute(query, (asistencia_id,))
+        mysql.connection.commit()
+        cursor.close()
+
+        return jsonify({"status": "success", "message": "Asistencia eliminada con éxito"}), 200
+    except Exception as e:
+        print(f"Error al eliminar asistencia: {e}")
+        return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
+
+
+# Obtener los detalles de un registro de asistencia específico
+@asistencia_bp.route("/api/asistencia/<int:asistencia_id>", methods=["GET"])
+def obtener_detalle_asistencia(asistencia_id):
+    try:
+        cursor = mysql.connection.cursor()
+        query = """
+            SELECT
+                estudiantes.id AS id,
+                estudiantes.nombre AS nombre,
+                estudiantes.codigo_saga AS saga,
+                estudiantes.paralelo_id AS paralelo,
+                asistencia.estado AS estado,
+                carreras.nombre AS carrera,
+                asistencia.timestamp AS fecha
+            FROM asistencia
+            INNER JOIN estudiantes ON asistencia.usuario_id = estudiantes.id
+            INNER JOIN carreras ON estudiantes.carrera_id = carreras.id
+            WHERE asistencia.id = %s
+        """
+        cursor.execute(query, (asistencia_id,))
+        row = cursor.fetchone()
+        cursor.close()
+
+        if not row:
+            return jsonify({"status": "error", "message": "Registro no encontrado"}), 404
+
+        data = {
+            "id": row[0],
+            "nombre": row[1],
+            "saga": row[2],
+            "paralelo": row[3],
+            "estado": row[4],
+            "carrera": row[5],
+            "fecha": row[6].strftime('%Y-%m-%d')
+        }
+
+        return jsonify({"status": "success", "data": data}), 200
+    except Exception as e:
+        print(f"Error al obtener detalle de asistencia: {e}")
+        return jsonify({"status": "error", "message": "Error interno del servidor"}), 500

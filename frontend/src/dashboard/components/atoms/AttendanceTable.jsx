@@ -9,6 +9,8 @@ const AttendanceTable = ({ selectedDate, estudiantes }) => {
     return <p>No hay registros para esta fecha.</p>;
   }
 
+  console.log("Estudiantes recibidos:", estudiantes); // Depuración
+
   return (
     <div className="attendance-table">
       <h3>Asistencia para {selectedDate}</h3>

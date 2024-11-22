@@ -4,17 +4,20 @@ const Filters = ({ paralelos, carreras, filters, onFilterChange }) => {
   return (
     <div className="filters-and-actions">
       <h3>Filtrar Asistencia</h3>
+      {/* Filtro por Paralelo */}
       <select
         onChange={(e) => onFilterChange(e.target.value, "paralelo")}
         value={filters.paralelo}
       >
         <option value="">Filtrar por Paralelo</option>
         {paralelos.map((p) => (
-          <option key={p} value={p}>
-            {p}
+          <option key={p.id} value={p.id}>
+            {p.nombre}
           </option>
         ))}
       </select>
+
+      {/* Filtro por Carrera */}
       <select
         onChange={(e) => onFilterChange(e.target.value, "carrera_id")}
         value={filters.carrera_id}
