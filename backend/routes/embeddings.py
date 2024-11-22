@@ -4,7 +4,7 @@ from keras_facenet import FaceNet
 import cv2
 
 # Rutas de las imágenes y embeddings
-IMAGES_PATH = "C:/Users/Frostmourne/Desktop/causa/data"
+IMAGES_PATH = "C:/Users/Frostmourne/Desktop/causa/Data"
 EMBEDDINGS_PATH = "C:/Users/Frostmourne/Desktop/causa/Embeddings"
 
 # Inicializa el modelo FaceNet

@@ -4,13 +4,16 @@ function Entrenamiento() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // URL base para las solicitudes
+  const BASE_URL = "http://127.0.0.1:5000";
+
   const handleTrain = async () => {
     setLoading(true);
     setMessage("");
     try {
-      const response = await fetch("/api/train", { method: "POST" });
+      const response = await fetch(`${BASE_URL}/api/entrenamiento/`, { method: "POST" }); // Usando BASE_URL
       const result = await response.json();
-
+  
       if (response.ok) {
         setMessage(result.message);
         alert("Entrenamiento completado exitosamente.");

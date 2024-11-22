@@ -5,6 +5,9 @@ function Reconocimiento() {
   const [recognizedUser, setRecognizedUser] = useState(null);
   const [confidence, setConfidence] = useState(null);
 
+  // URL base del backend
+  const BASE_URL = "http://127.0.0.1:5000";
+
   const startCamera = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
@@ -30,7 +33,7 @@ function Reconocimiento() {
     const capturedImage = captureImage();
 
     try {
-      const response = await fetch("/api/recognize", {
+      const response = await fetch(`${BASE_URL}/api/reconocimiento/`, { // Usamos BASE_URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imagen: capturedImage }),
@@ -44,7 +47,7 @@ function Reconocimiento() {
           `Usuario reconocido: ${result.usuario}, Confianza: ${result.confianza}`
         );
       } else {
-        alert("No se pudo reconocer el rostro.");
+        alert(result.message || "No se pudo reconocer el rostro.");
       }
     } catch (error) {
       console.error("Error durante el reconocimiento:", error);

@@ -9,8 +9,6 @@ const AttendanceTable = ({ selectedDate, estudiantes }) => {
     return <p>No hay registros para esta fecha.</p>;
   }
 
-  console.log("Estudiantes recibidos:", estudiantes); // Depuración
-
   return (
     <div className="attendance-table">
       <h3>Asistencia para {selectedDate}</h3>
@@ -23,6 +21,7 @@ const AttendanceTable = ({ selectedDate, estudiantes }) => {
             <th>Paralelo</th>
             <th>Carrera</th>
             <th>Estado</th>
+            <th>Hora de Registro</th> {/* Nueva columna para la hora */}
           </tr>
         </thead>
         <tbody>
@@ -34,6 +33,7 @@ const AttendanceTable = ({ selectedDate, estudiantes }) => {
               <td>{estudiante.paralelo}</td>
               <td>{estudiante.carrera}</td>
               <td>{estudiante.estado}</td>
+              <td>{new Date(estudiante.fecha).toLocaleTimeString()}</td> {/* Formato de hora */}
             </tr>
           ))}
         </tbody>

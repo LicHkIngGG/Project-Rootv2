@@ -9,7 +9,7 @@ from keras_facenet import FaceNet
 
 reconocimiento_bp = Blueprint("reconocimiento_bp", __name__)
 
-MODELS_PATH = "C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Modelos"
+MODELS_PATH = "C:/Users/Frostmourne/Desktop/causa/Modelos"
 embedder = FaceNet()
 
 # Cargar el modelo SVM y el mapeo de etiquetas

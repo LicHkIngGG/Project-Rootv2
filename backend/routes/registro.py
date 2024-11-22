@@ -5,60 +5,67 @@ from extensions import mysql
 
 registro_bp = Blueprint("registro_bp", __name__)
 
-# Ruta para almacenar imágenes capturadas y datos de usuario
-DATA_PATH = "C:/Users/Frostmourne/Desktop/causa/data"
+DATA_PATH = "C:/Users/Frostmourne/Desktop/causa/Data"
 
 @registro_bp.route("/register", methods=["POST"])
-def registrar_usuario():
+def registrar_estudiante():
     data = request.get_json()
 
     try:
-        # Validar los datos recibidos
+        # Extraer datos del JSON recibido
         nombre = data.get("nombre")
         codigo_saga = data.get("codigo_saga")
         paralelo_id = data.get("paralelo_id")
         carrera_id = data.get("carrera_id")
-        estado = data.get("estado", "activo")  # Por defecto "activo"
-        imagenes = data.get("imagenes", [])  # Lista de imágenes en formato base64
+        imagenes = data.get("imagenes", [])
 
+        # Validación de datos obligatorios
         if not all([nombre, codigo_saga, paralelo_id, carrera_id, imagenes]):
             return jsonify({"message": "Faltan datos obligatorios"}), 400
 
         if len(imagenes) < 10:
             return jsonify({"message": "Se requieren al menos 10 imágenes"}), 400
 
-        # Verificar si el código_saga ya existe en la base de datos
+        # Validar que paralelo_id y carrera_id existan
         cursor = mysql.connection.cursor()
+        cursor.execute("SELECT id FROM paralelos WHERE id = %s", (paralelo_id,))
+        if not cursor.fetchone():
+            return jsonify({"message": "El paralelo_id no es válido"}), 400
+
+        cursor.execute("SELECT id FROM carreras WHERE id = %s", (carrera_id,))
+        if not cursor.fetchone():
+            return jsonify({"message": "El carrera_id no es válido"}), 400
+
+        # Verificar si el código_saga ya está registrado
         cursor.execute("SELECT id FROM estudiantes WHERE codigo_saga = %s", (codigo_saga,))
         if cursor.fetchone():
-            return jsonify({"message": "El código ya está registrado"}), 400
+            return jsonify({"message": "El código_saga ya está registrado"}), 400
 
-        # Insertar datos personales en la tabla "estudiantes"
+        # Insertar estudiante en la tabla "estudiantes"
         query = """
             INSERT INTO estudiantes (nombre, codigo_saga, paralelo_id, carrera_id, estado, fecha_registro)
-            VALUES (%s, %s, %s, %s, %s, NOW())
+            VALUES (%s, %s, %s, %s, 'activo', NOW())
         """
-        cursor.execute(query, (nombre, codigo_saga, paralelo_id, carrera_id, estado))
+        cursor.execute(query, (nombre, codigo_saga, paralelo_id, carrera_id))
         mysql.connection.commit()
         estudiante_id = cursor.lastrowid
 
         # Crear carpeta para almacenar imágenes
-        usuario_path = os.path.join(DATA_PATH, codigo_saga)
-        os.makedirs(usuario_path, exist_ok=True)
+        estudiante_path = os.path.join(DATA_PATH, codigo_saga)
+        os.makedirs(estudiante_path, exist_ok=True)
 
-        # Decodificar y guardar cada imagen
+        # Guardar imágenes en el sistema y registrar en la tabla "imagenes"
         for idx, img_base64 in enumerate(imagenes):
             if not img_base64:
-                print(f"Imagen {idx} está vacía. Saltando...")
                 continue
             try:
                 # Decodificar la imagen base64
                 image_data = base64.b64decode(img_base64.split(",")[1])
-                file_path = os.path.join(usuario_path, f"rostro_{idx + 1}.jpg")
+                file_path = os.path.join(estudiante_path, f"rostro_{idx + 1}.jpg")
                 with open(file_path, "wb") as f:
                     f.write(image_data)
 
-                # Registrar imagen en la tabla "imagenes"
+                # Registrar la imagen en la base de datos
                 img_query = "INSERT INTO imagenes (estudiante_id, ruta_imagen) VALUES (%s, %s)"
                 cursor.execute(img_query, (estudiante_id, file_path))
             except Exception as img_error:
@@ -66,7 +73,8 @@ def registrar_usuario():
                 return jsonify({"message": "Error al procesar las imágenes"}), 500
 
         mysql.connection.commit()
-        return jsonify({"message": "Usuario y imágenes registrados correctamente"}), 201
+        return jsonify({"message": "Estudiante y sus imágenes registrados correctamente"}), 201
+
     except Exception as e:
         print(f"Error general: {e}")
-        return jsonify({"message": "Error al registrar usuario", "error": str(e)}), 500
+        return jsonify({"message": "Error al registrar estudiante", "error": str(e)}), 500
