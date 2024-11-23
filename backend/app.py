@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app, origins="*")
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Configuración de la base de datos MySQL
+# Configuración de la base de datos MySQL sea puitop sa
 app.config.from_pyfile('config.py')
 
 # Inicializar MySQL
