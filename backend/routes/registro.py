@@ -8,8 +8,7 @@ from datetime import datetime
 
 registro_bp = Blueprint('registro_bp', __name__)
 
-# Ruta donde se almacenarán las imágenes de los usuarios
-DATA_PATH = 'C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Data'
+DATA_PATH = "C:/Users/jrjos/OneDrive/Escritorio/Reconocimiento Facial/Data"
 
 @registro_bp.route('/api/registro/register', methods=['POST'])
 def register_user():
