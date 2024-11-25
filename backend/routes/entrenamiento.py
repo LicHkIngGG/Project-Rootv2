@@ -27,6 +27,10 @@ def cargar_datos(embeddings_path):
 
             try:
                 user_embeddings = np.load(os.path.join(embeddings_path, file_name))
+                
+                # Verificar forma del embedding
+                print(f"Embeddings para {usuario_id}: {user_embeddings.shape}")
+                
                 if len(user_embeddings) == 0:
                     print(f"Advertencia: No hay embeddings en {file_name}")
                     continue
@@ -47,9 +51,13 @@ def cargar_datos(embeddings_path):
 
 
 def entrenar_svm(embeddings, labels):
+    print(f"Forma de los embeddings: {embeddings.shape}")
+    print(f"Número de etiquetas: {len(labels)}")
+    
     model = SVC(kernel="linear", probability=True)
     model.fit(embeddings, labels)
     return model
+
 
 def guardar_modelo(model, label_map):
     modelo_path = os.path.join(MODELS_PATH, "modelo_svm.pkl")

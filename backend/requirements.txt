@@ -26,3 +26,12 @@ protobuf==3.19.6
 typing-extensions==4.4.0
 h5py==3.7.0       
 ml-dtypes==0.2.0
+pip install scikit-learn
+pip install keras-facenet
+#####
+pip uninstall scikit-learn
+pip uninstall numpy
+
+pip install numpy==1.21.6
+pip install scikit-learn==1.5.2
+
